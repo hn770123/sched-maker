@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="スケジュール">
+  <meta name="description" content="カラフルでポップなスケジュール作成支援アプリ">
+  <title>スケジュール作成支援アプリ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- ヘッダー -->
+    <header class="header">
+      <h1>📅 スケジュール</h1>
+      <div class="time-display" id="timeDisplay">00:00:00</div>
+    </header>
+    
+    <!-- TODO入力セクション -->
+    <section class="input-section">
+      <div class="input-group">
+        <label for="todoTitle">📝 TODOタイトル</label>
+        <input 
+          type="text" 
+          id="todoTitle" 
+          placeholder="例: 朝食を作る"
+          autocomplete="off"
+        >
+      </div>
+      
+      <div class="input-group">
+        <label for="todoDuration">⏱️ 所要時間（時間）</label>
+        <input 
+          type="number" 
+          id="todoDuration" 
+          placeholder="例: 0.5"
+          step="0.25"
+          min="0.25"
+          max="24"
+          autocomplete="off"
+        >
+      </div>
+      
+      <button class="btn" id="addTodoBtn">
+        ✨ TODOを追加
+      </button>
+    </section>
+    
+    <!-- スケジュールグリッド -->
+    <section class="schedule-grid">
+      <h2>🎨 今日のスケジュール</h2>
+      <div class="time-grid" id="timeGrid">
+        <!-- JavaScriptで動的に生成 -->
+      </div>
+    </section>
+    
+    <!-- 設定セクション -->
+    <section class="settings-section">
+      <h3>⚙️ 設定</h3>
+      <div class="time-range">
+        <div class="input-group">
+          <label for="wakeTime">起床時刻</label>
+          <select id="wakeTime">
+            <option value="0">0:00</option>
+            <option value="1">1:00</option>
+            <option value="2">2:00</option>
+            <option value="3">3:00</option>
+            <option value="4">4:00</option>
+            <option value="5">5:00</option>
+            <option value="6" selected>6:00</option>
+            <option value="7">7:00</option>
+            <option value="8">8:00</option>
+            <option value="9">9:00</option>
+            <option value="10">10:00</option>
+            <option value="11">11:00</option>
+            <option value="12">12:00</option>
+          </select>
+        </div>
+        
+        <div class="input-group">
+          <label for="sleepTime">就寝時刻</label>
+          <select id="sleepTime">
+            <option value="12">12:00</option>
+            <option value="13">13:00</option>
+            <option value="14">14:00</option>
+            <option value="15">15:00</option>
+            <option value="16">16:00</option>
+            <option value="17">17:00</option>
+            <option value="18">18:00</option>
+            <option value="19">19:00</option>
+            <option value="20">20:00</option>
+            <option value="21">21:00</option>
+            <option value="22">22:00</option>
+            <option value="23" selected>23:00</option>
+            <option value="24">24:00</option>
+          </select>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+  <script src="app.js"></script>
+</body>
+</html>
