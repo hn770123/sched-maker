@@ -165,7 +165,9 @@ class ScheduleApp {
 
             const label = document.createElement('div');
             label.className = 'time-label';
-            label.textContent = `${String(hour).padStart(2, '0')}:00`;
+            // 12時間表記に変換（時間のみ）
+            const hour12 = hour === 0 ? 12 : (hour > 12 ? hour - 12 : hour);
+            label.textContent = `${hour12}時`;
 
             slot.appendChild(label);
             grid.appendChild(slot);
@@ -202,8 +204,46 @@ class ScheduleApp {
         }
 
         todo.duration = newDuration;
+
+        // メモテキストも更新する
+        this.updateMemoText();
+
         this.saveToStorage();
         this.renderTodos();
+    }
+
+    // メモテキストを現在のTODOリストから再生成
+    updateMemoText() {
+        const memoLines = [];
+
+        this.todos.forEach(todo => {
+            const hours = Math.floor(todo.duration);
+            const minutes = Math.round((todo.duration - hours) * 60);
+
+            let timeStr = '';
+            if (hours > 0 && minutes > 0) {
+                timeStr = `${hours}時間${minutes}分`;
+            } else if (hours > 0) {
+                timeStr = `${hours}時間`;
+            } else {
+                timeStr = `${minutes}分`;
+            }
+
+            // チェックボックス付きの場合は[]を保持
+            const title = todo.hasCheckbox && !todo.title.includes('[]')
+                ? `[] ${todo.title}`
+                : todo.title;
+
+            memoLines.push(`${title} ${timeStr}`);
+        });
+
+        this.memoText = memoLines.join('\n');
+
+        // テキストエリアも更新
+        const memoInput = document.getElementById('todoMemo');
+        if (memoInput) {
+            memoInput.value = this.memoText;
+        }
     }
 
     // TODOのチェック状態をトグル
@@ -235,19 +275,19 @@ class ScheduleApp {
         box.className = `todo-box ${todo.color}`;
         box.dataset.id = todo.id;
 
-        // 高さを計算（1時間 = 180px）
-        const height = todo.duration * 180;
+        // 高さを計算（1時間 = 120px）
+        const height = todo.duration * 120;
         box.style.height = `${height}px`;
 
         // 開始時刻が設定されている場合は位置を設定
         if (todo.startTime !== null) {
-            const offsetFromWake = (todo.startTime - this.wakeTime) * 180;
+            const offsetFromWake = (todo.startTime - this.wakeTime) * 120;
             box.style.top = `${offsetFromWake}px`;
         } else {
             // 未配置の場合は自動配置
             const position = this.findAvailablePosition(todo);
             box.style.top = `${position}px`;
-            todo.startTime = this.wakeTime + (position / 180);
+            todo.startTime = this.wakeTime + (position / 120);
         }
 
         // コンテンツを作成
@@ -343,11 +383,12 @@ class ScheduleApp {
     // 利用可能な位置を見つける
     findAvailablePosition(newTodo) {
         let position = 0;
-        const maxPosition = (this.sleepTime - this.wakeTime) * 180 - (newTodo.duration * 180);
+        // 24時間分のスペースを確保（就寝時間を超えても配置可能）
+        const maxPosition = 24 * 120;
 
-        // 既存のTODOと重ならない位置を探す（5分単位 = 15px）
-        for (let pos = 0; pos <= maxPosition; pos += 15) {
-            const newStart = this.wakeTime + (pos / 180);
+        // 既存のTODOと重ならない位置を探す（5分単位 = 10px）
+        for (let pos = 0; pos <= maxPosition; pos += 10) {
+            const newStart = this.wakeTime + (pos / 120);
             const newEnd = newStart + newTodo.duration;
 
             let hasOverlap = false;
@@ -391,12 +432,11 @@ class ScheduleApp {
             const deltaY = e.touches[0].clientY - startY;
             let newTop = startTop + deltaY;
 
-            // グリッドにスナップ（5分単位 = 15px）
-            newTop = Math.round(newTop / 15) * 15;
+            // グリッドにスナップ（5分単位 = 10px）
+            newTop = Math.round(newTop / 10) * 10;
 
-            // 範囲制限
-            const maxTop = (this.sleepTime - this.wakeTime) * 180 - (todo.duration * 180);
-            newTop = Math.max(0, Math.min(newTop, maxTop));
+            // 範囲制限（0以上のみ、就寝時間は超えても可）
+            newTop = Math.max(0, newTop);
 
             box.style.top = `${newTop}px`;
         }, { passive: true });
@@ -408,7 +448,7 @@ class ScheduleApp {
 
             // 新しい開始時刻を保存
             const newTop = parseInt(box.style.top);
-            todo.startTime = this.wakeTime + (newTop / 180);
+            todo.startTime = this.wakeTime + (newTop / 120);
             this.saveToStorage();
         });
 
@@ -427,12 +467,11 @@ class ScheduleApp {
             const deltaY = e.clientY - startY;
             let newTop = startTop + deltaY;
 
-            // グリッドにスナップ（5分単位 = 15px）
-            newTop = Math.round(newTop / 15) * 15;
+            // グリッドにスナップ（5分単位 = 10px）
+            newTop = Math.round(newTop / 10) * 10;
 
-            // 範囲制限
-            const maxTop = (this.sleepTime - this.wakeTime) * 180 - (todo.duration * 180);
-            newTop = Math.max(0, Math.min(newTop, maxTop));
+            // 範囲制限（0以上のみ、就寝時間は超えても可）
+            newTop = Math.max(0, newTop);
 
             box.style.top = `${newTop}px`;
         });
@@ -444,7 +483,7 @@ class ScheduleApp {
 
             // 新しい開始時刻を保存
             const newTop = parseInt(box.style.top);
-            todo.startTime = this.wakeTime + (newTop / 180);
+            todo.startTime = this.wakeTime + (newTop / 120);
             this.saveToStorage();
         });
     }
