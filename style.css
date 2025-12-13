@@ -219,7 +219,7 @@ body {
 
 .time-slot {
     position: relative;
-    height: 60px;
+    height: 180px;
     border-bottom: 1px solid #E8E8E8;
     display: flex;
     align-items: center;
@@ -229,7 +229,7 @@ body {
 .time-label {
     position: absolute;
     left: 0;
-    top: 50%;
+    top: 0;
     transform: translateY(-50%);
     font-size: 12px;
     font-weight: 600;
@@ -288,6 +288,20 @@ body {
     font-size: 14px;
     flex: 1;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.checkbox {
+    font-size: 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.2s ease;
+}
+
+.checkbox:active {
+    transform: scale(1.2);
 }
 
 .todo-duration {
@@ -299,6 +313,33 @@ body {
     border-radius: 12px;
 }
 
+.btn-container {
+    display: flex;
+    gap: 4px;
+    margin-left: var(--spacing-sm);
+}
+
+.adjust-btn {
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    color: var(--text-light);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.adjust-btn:active {
+    background: rgba(255, 255, 255, 0.5);
+    transform: scale(0.9);
+}
+
 .delete-btn {
     background: rgba(255, 255, 255, 0.3);
     border: none;
@@ -307,7 +348,6 @@ body {
     height: 24px;
     border-radius: 50%;
     cursor: pointer;
-    margin-left: var(--spacing-sm);
     font-size: 16px;
     display: flex;
     align-items: center;
