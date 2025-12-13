@@ -219,7 +219,7 @@ body {
 
 .time-slot {
     position: relative;
-    height: 180px;
+    height: 120px;
     border-bottom: 1px solid #E8E8E8;
     display: flex;
     align-items: center;
