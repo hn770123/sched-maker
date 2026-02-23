@@ -483,3 +483,25 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 107, 157, 0.7);
 }
+
+/* 追加タスクセクション */
+.add-task-section {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow);
+    animation: fadeIn 0.5s ease-out 0.4s backwards;
+    margin-top: var(--spacing-lg);
+}
+
+.add-task-section h3 {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: var(--spacing-md);
+    color: var(--text-dark);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, var(--color-accent-4), var(--color-accent-5));
+}
