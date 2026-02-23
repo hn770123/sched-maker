@@ -187,11 +187,39 @@ class ScheduleApp {
         this.renderTodos();
     }
 
-    // TODOを削除
-    deleteTodo(id) {
-        this.todos = this.todos.filter(todo => todo.id !== id);
+    // 新しい入力欄からTODOを追加
+    addTodosFromNewInput() {
+        const newInput = document.getElementById('newTodoInput');
+        if (!newInput || !newInput.value.trim()) return;
+
+        const newText = newInput.value;
+        // 既存のタスクの後に続けるため、colorIndexはリセットしない
+        const newTodos = this.parseTodoMemo(newText);
+
+        if (newTodos.length === 0) return;
+
+        // 既存のTODOに追加
+        this.todos = [...this.todos, ...newTodos];
+
+        // メモテキストも更新（これにより全タスクがメモに反映される）
+        this.updateMemoText();
+
         this.saveToStorage();
         this.renderTodos();
+
+        // 入力欄をクリア
+        newInput.value = '';
+    }
+
+    // TODOを削除
+    deleteTodo(id) {
+        // 配列から削除せず、削除フラグを立てる（メモには残すため）
+        const todo = this.todos.find(t => t.id === id);
+        if (todo) {
+            todo.isDeleted = true;
+            this.saveToStorage();
+            this.renderTodos();
+        }
     }
 
     // TODOの時間を調整（分単位）
@@ -264,6 +292,7 @@ class ScheduleApp {
 
         // TODOボックスを描画
         this.todos.forEach(todo => {
+            if (todo.isDeleted) return; // 削除済みタスクは描画しない
             const box = this.createTodoBox(todo);
             grid.appendChild(box);
         });
@@ -393,6 +422,7 @@ class ScheduleApp {
 
             let hasOverlap = false;
             for (const todo of this.todos) {
+                if (todo.isDeleted) continue; // 削除済みタスクは無視
                 if (todo.id === newTodo.id) continue;
                 if (todo.startTime === null) continue;
 
@@ -495,6 +525,14 @@ class ScheduleApp {
         if (updateBtn) {
             updateBtn.addEventListener('click', () => {
                 this.updateTodosFromMemo();
+            });
+        }
+
+        // 追加タスクボタン
+        const addBtn = document.getElementById('addTodosBtn');
+        if (addBtn) {
+            addBtn.addEventListener('click', () => {
+                this.addTodosFromNewInput();
             });
         }
 
